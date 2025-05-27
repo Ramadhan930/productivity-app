@@ -3,7 +3,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: docker/apache-php.Dockerfile
+      dockerfile: docker/apache-php.dockerfile
     ports:
       - "8080:80"
     volumes:
@@ -15,7 +15,7 @@ services:
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: todo_app
+      MYSQL_DATABASE: productivity_app
     ports:
       - "3306:3306"
     volumes:
