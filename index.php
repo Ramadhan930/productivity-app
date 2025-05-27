@@ -27,7 +27,8 @@ $habit_result = $habit_stmt->get_result();
 
 <head>
     <meta charset="UTF-8">
-    <title>To-Do List</title>
+    <link rel="icon" href="assets/img/nexdo.png" type="image/png">
+    <title>Nexdo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
 </head>
