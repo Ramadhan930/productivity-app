@@ -1,12 +1,10 @@
 <?php
 $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__));
-
 $errors = 0;
 
 foreach ($rii as $file) {
     if ($file->isDir())
         continue;
-
     if (pathinfo($file->getPathname(), PATHINFO_EXTENSION) === 'php') {
         $output = null;
         $return_var = null;
@@ -18,8 +16,7 @@ foreach ($rii as $file) {
     }
 }
 
-if ($errors > 0) {
+if ($errors > 0)
     exit(1);
-} else {
+else
     echo "All PHP files passed syntax check.\n";
-}
