@@ -23,18 +23,28 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.1'  # sesuaikan versi PHP
+        php-version: '8.1'
+
+    - name: Copy syntax check script
+      run: |
+        echo '<?php
+        $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__));
+        $errors = 0;
+        foreach ($rii as $file) {
+          if ($file->isDir()) continue;
+          if (pathinfo($file->getPathname(), PATHINFO_EXTENSION) === "php") {
+            $output = null;
+            $return_var = null;
+            exec("php -l " . escapeshellarg($file->getPathname()), $output, $return_var);
+            if ($return_var !== 0) {
+              echo implode("\n", $output) . "\n";
+              $errors++;
+            }
+          }
+        }
+        if ($errors > 0) exit(1);
+        else echo "All PHP files passed syntax check.\n";
+        ?>' > check_syntax.php
 
     - name: Check PHP syntax
-      run: find . -name "*.php" -exec php -l {} \;
-
-    # Jika kamu punya script test misal tests/test.php, bisa jalankan di sini
-    # - name: Run PHP tests
-    #   run: php tests/test.php
-
-
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
-
-    # - name: Run test suite
-    #   run: composer run-script test
+      run: php check_syntax.php
