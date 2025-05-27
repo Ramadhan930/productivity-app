@@ -35,7 +35,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build and Push Docker Image
-        uses: mr-smithers-exellent/docker-build-push@v4
+        uses: mr-smithers-exellent/docker-build-push@v3
         with: 
           image: nightdoom/productivity-app
           registry: docker.io
