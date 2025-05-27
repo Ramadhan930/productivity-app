@@ -1,0 +1,37 @@
+name: PHP CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'  # sesuaikan versi PHP
+
+    - name: Check PHP syntax
+      run: find . -name "*.php" -exec php -l {} \;
+
+    # Jika kamu punya script test misal tests/test.php, bisa jalankan di sini
+    # - name: Run PHP tests
+    #   run: php tests/test.php
+
+
+    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
+    # Docs: https://getcomposer.org/doc/articles/scripts.md
+
+    # - name: Run test suite
+    #   run: composer run-script test
