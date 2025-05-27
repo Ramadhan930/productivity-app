@@ -1,26 +1,32 @@
-name: CI/CD Docker PHP
+name: Docker Compose CI
 
 on:
   push:
     branches:
-      - main
+      - main  # sesuaikan dengan branch kamu
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+    - name: Set up Docker Buildx (optional, tapi direkomendasikan)
+      uses: docker/setup-buildx-action@v2
 
-      - name: Build Docker Image
-        run: docker build -f docker/apache-php.dockerfile -t php-app .
+    - name: Build and run containers
+      run: |
+        docker compose up -d --build
 
-      - name: Run docker-compose
-        run: docker-compose up -d --build
+    - name: Check running containers
+      run: docker ps
 
-      - name: Check PHP files
-        run: docker exec $(docker ps -qf "ancestor=php-app") php -v
+    # Optional: test koneksi database, atau cek aplikasi respons
+    # - name: Wait for DB to be ready (example)
+    #   run: |
+    #     until docker exec $(docker ps -q -f name=db) mysqladmin ping -h "127.0.0.1" --silent; do
+    #       echo "Waiting for database connection..."
+    #       sleep 3
+    #     done
