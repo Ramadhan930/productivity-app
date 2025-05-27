@@ -10,51 +10,34 @@ permissions:
   contents: read
 
 jobs:
-  build:
-
-    runs-on: ${{matrix.os}}
+  php-lint:
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.1'
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
 
-    - name: Copy syntax check script
-      run: |
-        echo '<?php
-        $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__));
-        $errors = 0;
-        foreach ($rii as $file) {
-          if ($file->isDir()) continue;
-          if (pathinfo($file->getPathname(), PATHINFO_EXTENSION) === "php") {
-            $output = null;
-            $return_var = null;
-            exec("php -l " . escapeshellarg($file->getPathname()), $output, $return_var);
-            if ($return_var !== 0) {
-              echo implode("\n", $output) . "\n";
-              $errors++;
-            }
-          }
-        }
-        if ($errors > 0) exit(1);
-        else echo "All PHP files passed syntax check.\n";
-        ?>' > check_syntax.php
+      - name: Run PHP Syntax Check
+        run: php check_syntax.php
 
-    - name: Check PHP syntax
-      run: php check_syntax.php
+  docker-build:
+    needs: php-lint
+    runs-on: ubuntu-latest
 
-    - name: Build and Push Docker Image
-      uses: mr-smithers-exellent/docker-build-push@v4
-      with: 
-        image: nightdoom/productivity-app
-        registry: docker.io
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
 
-
+      - name: Build and Push Docker Image
+        uses: mr-smithers-exellent/docker-build-push@v4
+        with: 
+          image: nightdoom/productivity-app
+          registry: docker.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
