@@ -34,9 +34,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Log in to DockerHub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      
+      - name: Debug secrets
+        run: |
+          echo "DOCKER_USERNAME length: ${{ secrets.DOCKER_USERNAME && secrets.DOCKER_USERNAME.length || 0 }}"
+          echo "DOCKER_PASSWORD length: ${{ secrets.DOCKER_PASSWORD && secrets.DOCKER_PASSWORD.length || 0 }}"
 
       - name: Build Docker Image
         run: docker build -t nightdoom/productivity-app .
