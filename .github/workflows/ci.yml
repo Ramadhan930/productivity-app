@@ -17,7 +17,8 @@ jobs:
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -25,19 +26,34 @@ jobs:
           php-version: '8.1'
 
       - name: Run PHP Syntax Check
-        run: php check_syntax.php
+        run: |
+          if [ ! -f check_syntax.php ]; then
+            echo "check_syntax.php not found!"
+            exit 1
+          fi
+          php check_syntax.php
 
   docker-build:
+    name: Build & Push Docker Image
     needs: php-lint
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - name: Build and Push Docker Image
-        uses: mr-smithers-exellent/docker-build-push@v3
-        with: 
-          image: nightdoom/productivity-app
-          registry: docker.io
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Check Dockerfile existence
+        run: |
+          if [ ! -f Dockerfile ]; then
+            echo "Dockerfile not found!"
+            exit 1
+          fi
+
+      - name: Log in to DockerHub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build Docker Image
+        run: docker build -t nightdoom/productivity-app .
+
+      - name: Push Docker Image
+        run: docker push nightdoom/productivity-app
