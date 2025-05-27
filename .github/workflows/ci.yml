@@ -14,33 +14,28 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
 
+      - name: Show PHP version
+        run: php -v
+
       - name: Run PHP Syntax Check
-        run: |
-          if [ ! -f check_syntax.php ]; then
-            echo "check_syntax.php not found!"
-            exit 1
-          fi
-          php check_syntax.php
+        run: php check_syntax.php
 
   docker-build:
-    name: Build & Push Docker Image
     needs: php-lint
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Check Dockerfile existence
         run: |
