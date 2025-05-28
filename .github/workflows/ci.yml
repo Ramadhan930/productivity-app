@@ -49,7 +49,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
   
-      - name: Install Railway CLI (new)
+      - name: Install Railway CLI
         run: npm install -g @railway/cli
   
       - name: Deploy to Railway
