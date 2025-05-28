@@ -15,7 +15,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-
     steps:
       - uses: actions/checkout@v4
 
@@ -44,7 +43,7 @@ jobs:
       - name: Push Docker Image
         run: docker push nightdoom/productivity-app
 
-    deploy:
+  deploy:
     needs: docker-build
     runs-on: ubuntu-latest
     steps:
@@ -54,7 +53,7 @@ jobs:
         run: npm install -g railway
 
       - name: Deploy to Railway
-        run: railway up --service productivity-app
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-
+        run: |
+          railway up --service productivity-app
