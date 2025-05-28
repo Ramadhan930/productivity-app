@@ -27,6 +27,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <head>
     <title>Login</title>
+    <link rel="icon" href="assets/img/nexdo.png" type="image/png">
+    <title>Nexdo</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
